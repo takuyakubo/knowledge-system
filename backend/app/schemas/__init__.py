@@ -19,6 +19,15 @@ from app.schemas.category import (
     CategoryTree,
     CategoryUpdate,
 )
+from app.schemas.file import (
+    File,
+    FileBulkUploadResponse,
+    FileCreate,
+    FileSearchResult,
+    FileStats,
+    FileUpdate,
+    FileUploadResponse,
+)
 from app.schemas.paper import (
     Paper,
     PaperCreate,
@@ -55,6 +64,13 @@ __all__ = [
     "CategorySearchResult",
     "CategoryStats",
     "CategoryTree",
+    "File",
+    "FileCreate",
+    "FileUpdate",
+    "FileUploadResponse",
+    "FileBulkUploadResponse",
+    "FileSearchResult",
+    "FileStats",
     "Paper",
     "PaperCreate",
     "PaperUpdate",
