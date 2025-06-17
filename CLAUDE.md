@@ -1,7 +1,7 @@
 ---
 title: CLAUDE.md
 created_at: 2025-06-14
-updated_at: 2025-06-15
+updated_at: 2025-06-17
 # このプロパティは、Claude Codeが関連するドキュメントの更新を検知するために必要です。消去しないでください。
 ---
 
@@ -22,6 +22,7 @@ updated_at: 2025-06-15
 - **コード品質**: `ruff` によるリント・フォーマット、`mypy` による型チェック
 - **自動化**: `pre-commit` によるコード品質の自動チェック
 - **CI/CD**: GitHub Actionsによる継続的インテグレーション
+- **ブランチ戦略**: 必ずmainブランチから新規ブランチを作成し、Pull Request経由でマージする
 
 ## 技術スタック
 
@@ -294,6 +295,31 @@ uv run pre-commit run --all-files   # 全チェック
 
 Claude Codeは `gh` コマンドを使用してGitHub操作を行うことができます。
 
+### 開発フロー（重要）
+
+**すべての開発作業は以下のフローに従ってください：**
+
+1. **新機能・修正の開始前に必ずmainブランチから新規ブランチを作成**
+   ```bash
+   git checkout main
+   git pull origin main
+   git checkout -b feature/新機能名
+   # または
+   git checkout -b fix/バグ修正名
+   ```
+
+2. **作業完了後、Pull Requestを作成**
+   ```bash
+   # コミット後
+   git push -u origin feature/新機能名
+   # PR作成
+   make pr TITLE="機能追加: XXX" BODY="詳細な説明" LABEL="enhancement"
+   ```
+
+3. **直接mainブランチへのプッシュは禁止**
+   - 緊急時やドキュメントの軽微な修正も必ずPR経由で行う
+   - コードレビューとCIチェックを通過してからマージ
+
 ### プルリクエスト作成
 
 #### ブランチ名の命名規則
@@ -449,7 +475,10 @@ GitHub Actionsで自動ベンチマークが実行されます：
    - `make check-all` でチェックをパス
    - テストがすべて通ることを確認
 
-8. **GitHub操作**
+8. **GitHub操作・ブランチ戦略**
+   - 必ずmainブランチから新規ブランチを作成
+   - 作業完了後はPull Request経由でマージ
+   - 直接mainブランチへのプッシュは禁止
    - イシュー作成時は `make issue`、PR作成時は `make pr` を使用
 
 
