@@ -3,10 +3,10 @@
 from collections.abc import Generator
 
 from sqlalchemy import create_engine
-from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import Session, sessionmaker
 
 from app.core.config import settings
+from app.models.base import Base  # 新しいBaseクラスをインポート
 
 # SQLAlchemy エンジンの作成
 engine = create_engine(
@@ -17,9 +17,6 @@ engine = create_engine(
 
 # セッションファクトリの作成
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
-
-# ベースクラスの作成
-Base = declarative_base()
 
 
 def get_db() -> Generator[Session, None, None]:
