@@ -5,7 +5,13 @@ description = "personal knowledge management system"
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
+    "alembic>=1.16.2",
     # 主要な依存関係をここに記載
+    "fastapi>=0.115.12",
+    "psycopg2-binary>=2.9.10",
+    "python-multipart>=0.0.20",
+    "sqlalchemy>=2.0.41",
+    "uvicorn>=0.34.3",
 ]
 
 [project.optional-dependencies]
@@ -63,6 +69,12 @@ ignore = [
     "PERF203",
     "PERF401",
     "PLC2401",  # non-ASCII character in function names (allow Japanese test names)
+    "PTH118",   # os.path.join() in sys.path modifications
+    "PTH120",   # os.path.dirname() in sys.path modifications
+    "PLR2004",  # Magic values in tests
+    "RUF002",   # Full-width parentheses in Japanese comments
+    "RUF003",   # Full-width parentheses in Japanese comments
+    "UP038",    # isinstance with tuple in validation
 ]
 
 [tool.ruff.lint.per-file-ignores]
@@ -94,7 +106,7 @@ exclude_dirs = ["tests", ".venv"]
 skips = ["B101"]  # Skip assert_used test
 
 [tool.pytest.ini_options]
-testpaths = ["tests"]
+testpaths = ["tests", "backend/tests"]
 python_files = ["test_*.py", "*_test.py"]
 addopts = [
     "-ra",
@@ -105,4 +117,10 @@ addopts = [
 markers = [
     "slow: marks tests as slow (deselect with '-m \"not slow\"')",
     "integration: marks tests as integration tests",
+]
+
+[dependency-groups]
+dev = [
+    "httpx>=0.28.1",
+    "pytest-asyncio>=1.0.0",
 ]
