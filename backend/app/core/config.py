@@ -1,6 +1,7 @@
 """Application configuration."""
 
 import os
+import secrets
 
 from pydantic import BaseModel, field_validator
 
@@ -24,6 +25,37 @@ class Settings(BaseModel):
     # ファイルアップロード設定
     UPLOAD_DIRECTORY: str = "uploads"
     MAX_UPLOAD_SIZE: int = 10 * 1024 * 1024  # 10MB
+
+    # セキュリティ設定
+    SECRET_KEY: str = os.getenv("SECRET_KEY") or secrets.token_urlsafe(32)
+
+    # JWT設定
+    ACCESS_TOKEN_EXPIRE_MINUTES: int = 30
+    REFRESH_TOKEN_EXPIRE_MINUTES: int = 60 * 24 * 7  # 7 days
+
+    # パスワードリセット設定
+    EMAIL_RESET_TOKEN_EXPIRE_HOURS: int = 48
+    EMAIL_VERIFICATION_TOKEN_EXPIRE_HOURS: int = 24
+
+    # セキュリティ設定
+    PASSWORD_MIN_LENGTH: int = 8
+    BCRYPT_ROUNDS: int = 12
+
+    # Rate limiting
+    RATE_LIMIT_PER_MINUTE: int = 60
+    AUTH_RATE_LIMIT_PER_MINUTE: int = 5
+
+    # Session設定
+    SESSION_EXPIRE_MINUTES: int = 60 * 24  # 24 hours
+
+    # メール設定（将来的に追加）
+    SMTP_HOST: str | None = None
+    SMTP_PORT: int = 587
+    SMTP_TLS: bool = True
+    SMTP_USER: str | None = None
+    SMTP_PASSWORD: str | None = None
+    EMAILS_FROM_EMAIL: str | None = None
+    EMAILS_FROM_NAME: str | None = None
 
     @field_validator("ALLOWED_HOSTS", mode="before")
     @classmethod
