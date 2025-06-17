@@ -4,7 +4,7 @@ from typing import Any
 
 import pytest
 
-from project_name.core.example import (
+from knowledge_system.core.example import (
     ExampleClass,
     ExampleConfig,
     process_data,

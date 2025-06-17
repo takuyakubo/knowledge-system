@@ -17,7 +17,7 @@ updated_at: 2025-06-15
 
 ### 開発方針
 
-- **パッケージ構造**: コアロジックは `src/project_name` に配置し、パッケージとして管理
+- **パッケージ構造**: コアロジックは `src/knowledge_system` に配置し、パッケージとして管理
 - **依存関係管理**: `uv` を使用し、`uv sync` で開発環境を構築
 - **コード品質**: `ruff` によるリント・フォーマット、`mypy` による型チェック
 - **自動化**: `pre-commit` によるコード品質の自動チェック
@@ -46,7 +46,7 @@ project-root/
 │   ├── ISSUE_TEMPLATE/          # Issueテンプレート
 │   └── PULL_REQUEST_TEMPLATE.md # Pull Requestテンプレート
 ├── src/
-│   └── project_name/            # メインパッケージ（uv syncでインストール可能）
+│   └── knowledge_system/            # メインパッケージ（uv syncでインストール可能）
 │       ├── __init__.py
 │       ├── py.typed             # PEP 561準拠の型情報マーカー
 │       ├── types.py             # プロジェクト共通型定義
@@ -78,8 +78,8 @@ project-root/
 
 **PEP 695新型構文とTypedDict・Literal・Protocolの活用**
 ```python
-# src/project_name/types.py で定義済み
-from project_name.types import ItemDict, ProcessorStatus, JSONObject
+# src/knowledge_system/types.py で定義済み
+from knowledge_system.types import ItemDict, ProcessorStatus, JSONObject
 
 # PEP 695型構文の使用
 type ProcessorStatus = Literal["success", "error", "pending"]
@@ -107,13 +107,13 @@ config: JSONObject = {"setting": True, "count": 42}
   - 定数: UPPER_SNAKE_CASE
   - プライベート: 先頭に `_`
 - **インポート順序**: 標準ライブラリ → サードパーティ → ローカル（ruffが自動整理）
-- **インポート形式**: `from project_name.module import function`
+- **インポート形式**: `from knowledge_system.module import function`
 
 ### 更新された型ヒントベストプラクティス
 
 ```python
 # 共通型の使用
-from project_name.types import ItemDict, ProcessorStatus, JSONObject
+from knowledge_system.types import ItemDict, ProcessorStatus, JSONObject
 from typing import Protocol
 from collections.abc import Sequence
 
@@ -153,7 +153,7 @@ def process_items(
 ### プロファイリングツールの使用
 
 ```python
-from project_name.utils.profiling import profile, timeit, Timer, profile_context
+from knowledge_system.utils.profiling import profile, timeit, Timer, profile_context
 
 # 関数デコレーター
 @profile
@@ -386,7 +386,7 @@ def test_エッジケース_空リストで空結果():
 ### プロファイリングツールの使用
 
 ```python
-from project_name.utils.profiling import profile, timeit, Timer, profile_context
+from knowledge_system.utils.profiling import profile, timeit, Timer, profile_context
 
 # 関数デコレーター
 @profile
@@ -428,8 +428,8 @@ GitHub Actionsで自動ベンチマークが実行されます：
    - テストを書く際は、正常系・異常系・エッジケースをカバー
 
 3. **パッケージ構造**
-   - コアロジックは必ず `src/project_name` パッケージ内に配置
-   - インポートは `from project_name.module import ...` の形式を使用
+   - コアロジックは必ず `src/knowledge_system` パッケージ内に配置
+   - インポートは `from knowledge_system.module import ...` の形式を使用
 
 4. **エラーハンドリング**
    - 適切な例外クラスを定義して使用
@@ -473,7 +473,7 @@ uv run pre-commit install
 
 ```bash
 # 特定のファイルだけチェック
-uv run mypy src/project_name/specific_module.py
+uv run mypy src/knowledge_system/specific_module.py
 
 # 型スタブのインストール
 uv add --dev types-requests types-pyyaml

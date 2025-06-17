@@ -3,7 +3,7 @@
 from dataclasses import dataclass
 from typing import Any, Protocol
 
-from project_name.types import ItemDict
+from knowledge_system.types import ItemDict
 
 
 class DataProcessor(Protocol):

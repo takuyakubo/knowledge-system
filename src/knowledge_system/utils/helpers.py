@@ -4,7 +4,7 @@ import json
 from pathlib import Path
 from typing import TypeVar
 
-from project_name.types import JSONObject, JSONValue
+from knowledge_system.types import JSONObject, JSONValue
 
 T = TypeVar("T")
 
