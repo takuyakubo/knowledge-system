@@ -17,6 +17,16 @@ from app.schemas.paper import (
     PaperStatus,
     PaperUpdate,
 )
+from app.schemas.tag import (
+    Tag,
+    TagBulkCreate,
+    TagCreate,
+    TagInDB,
+    TagList,
+    TagMerge,
+    TagUpdate,
+    TagUsageStats,
+)
 
 __all__ = [
     "Article",
@@ -32,4 +42,12 @@ __all__ = [
     "PaperList",
     "PaperRating",
     "PaperStatus",
+    "Tag",
+    "TagCreate",
+    "TagUpdate",
+    "TagInDB",
+    "TagList",
+    "TagBulkCreate",
+    "TagMerge",
+    "TagUsageStats",
 ]
