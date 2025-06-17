@@ -15,8 +15,8 @@ class Settings(BaseModel):
     # CORS設定
     ALLOWED_HOSTS: list[str] = ["http://localhost:3000", "http://127.0.0.1:3000"]
 
-    # データベース設定
-    DATABASE_URL: str = "postgresql://postgres:password@localhost:5432/knowledge_system"
+    # データベース設定（開発環境ではSQLiteを使用）
+    DATABASE_URL: str = "sqlite:///./knowledge_system.db"
 
     # 開発モード
     DEBUG: bool = True

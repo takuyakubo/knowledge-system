@@ -45,3 +45,8 @@ coverage.xml
 
 # Project specific
 .secrets.baseline
+
+# Database
+*.db
+*.sqlite
+*.sqlite3
