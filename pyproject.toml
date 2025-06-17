@@ -10,6 +10,7 @@ dependencies = [
     "fastapi>=0.115.12",
     "psycopg2-binary>=2.9.10",
     "python-multipart>=0.0.20",
+    "python-slugify>=8.0.4",
     "sqlalchemy>=2.0.41",
     "uvicorn>=0.34.3",
 ]
@@ -79,6 +80,7 @@ ignore = [
 
 [tool.ruff.lint.per-file-ignores]
 "tests/*" = ["PLR2004", "PLR0913"]  # テストでは magic number とパラメータ数を許可
+"backend/app/api/**/*.py" = ["B008", "PLR0913"]  # FastAPI依存関数とAPIパラメータ数を許可
 
 [tool.mypy]
 python_version = "3.12"
