@@ -6,6 +6,7 @@ from app.models.category import Category
 from app.models.file import File
 from app.models.paper import Paper
 from app.models.tag import Tag
+from app.models.user import User
 
 # All models
 __all__ = [
@@ -16,4 +17,5 @@ __all__ = [
     "Paper",
     "Tag",
     "TimestampMixin",
+    "User",
 ]

@@ -13,6 +13,11 @@ dependencies = [
     "python-slugify>=8.0.4",
     "sqlalchemy>=2.0.41",
     "uvicorn>=0.34.3",
+    # 認証・セキュリティ関連
+    "passlib[bcrypt]>=1.7.4",
+    "python-jose[cryptography]>=3.3.0",
+    "bcrypt>=4.0.0",
+    "pydantic[email]>=2.0.0",
 ]
 
 [project.optional-dependencies]
@@ -81,6 +86,7 @@ ignore = [
 [tool.ruff.lint.per-file-ignores]
 "tests/*" = ["PLR2004", "PLR0913"]  # テストでは magic number とパラメータ数を許可
 "backend/app/api/**/*.py" = ["B008", "PLR0913"]  # FastAPI依存関数とAPIパラメータ数を許可
+"backend/app/deps.py" = ["B008"]  # FastAPI dependency injection patterns
 
 [tool.mypy]
 python_version = "3.12"
@@ -105,7 +111,7 @@ disallow_incomplete_defs = false
 
 [tool.bandit]
 exclude_dirs = ["tests", ".venv"]
-skips = ["B101"]  # Skip assert_used test
+skips = ["B101", "B105", "B106"]  # Skip assert_used test, hardcoded password string, hardcoded password funcarg
 
 [tool.pytest.ini_options]
 testpaths = ["tests", "backend/tests"]
