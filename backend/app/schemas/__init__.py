@@ -8,6 +8,17 @@ from app.schemas.article import (
     ArticlePublish,
     ArticleUpdate,
 )
+from app.schemas.category import (
+    Category,
+    CategoryBreadcrumb,
+    CategoryBulkUpdate,
+    CategoryCreate,
+    CategoryMove,
+    CategorySearchResult,
+    CategoryStats,
+    CategoryTree,
+    CategoryUpdate,
+)
 from app.schemas.paper import (
     Paper,
     PaperCreate,
@@ -35,6 +46,15 @@ __all__ = [
     "ArticleInDB",
     "ArticleList",
     "ArticlePublish",
+    "Category",
+    "CategoryCreate",
+    "CategoryUpdate",
+    "CategoryBreadcrumb",
+    "CategoryBulkUpdate",
+    "CategoryMove",
+    "CategorySearchResult",
+    "CategoryStats",
+    "CategoryTree",
     "Paper",
     "PaperCreate",
     "PaperUpdate",
