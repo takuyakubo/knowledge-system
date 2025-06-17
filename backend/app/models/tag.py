@@ -32,7 +32,7 @@ class Tag(Base, TimestampMixin):
 
     # 表示設定
     color: Mapped[str | None] = mapped_column(
-        String(7), nullable=True, doc="タグの色（HEXカラーコード）"
+        String(7), nullable=True, doc="タグの色(HEXカラーコード)"
     )
     icon: Mapped[str | None] = mapped_column(
         String(50), nullable=True, doc="アイコン名"
@@ -119,17 +119,17 @@ class Tag(Base, TimestampMixin):
         """タグ名のリストから既存タグを取得、または新規作成."""
         tags = []
 
-        for name in tag_names:
-            name = name.strip()
-            if not name:
+        for raw_name in tag_names:
+            tag_name = raw_name.strip()
+            if not tag_name:
                 continue
 
             # 既存タグを検索
-            tag = session.query(cls).filter(cls.name == name).first()
+            tag = session.query(cls).filter(cls.name == tag_name).first()
 
             if not tag:
                 # 新規作成
-                slug = cls.create_slug_from_name(name)
+                slug = cls.create_slug_from_name(tag_name)
 
                 # スラッグの重複を避ける
                 base_slug = slug
@@ -138,7 +138,7 @@ class Tag(Base, TimestampMixin):
                     slug = f"{base_slug}-{counter}"
                     counter += 1
 
-                tag = cls(name=name, slug=slug)
+                tag = cls(name=tag_name, slug=slug)
                 session.add(tag)
 
             tags.append(tag)
@@ -147,30 +147,7 @@ class Tag(Base, TimestampMixin):
 
     def get_related_tags(self, limit: int = 10) -> list["Tag"]:
         """関連するタグを取得（共起頻度ベース）."""
-        from sqlalchemy import and_, func
-
-        from app.models.article import article_tag_association
-
-        # 記事での共起タグ
-        article_cooccur = (
-            self.__class__.query.join(
-                article_tag_association,
-                article_tag_association.c.tag_id == self.__class__.id,
-            )
-            .join(
-                article_tag_association.alias("aa2"),
-                and_(
-                    article_tag_association.c.article_id
-                    == article_tag_association.alias("aa2").c.article_id,
-                    article_tag_association.alias("aa2").c.tag_id != self.id,
-                ),
-            )
-            .filter(article_tag_association.alias("aa2").c.tag_id == self.__class__.id)
-            .group_by(self.__class__.id)
-            .order_by(func.count().desc())
-            .limit(limit)
-        )
-
         # 実際の実装では、より効率的なクエリが必要
         # ここでは簡略化した形で示す
+        # TODO: 共起頻度ベースの関連タグ取得機能を実装
         return []

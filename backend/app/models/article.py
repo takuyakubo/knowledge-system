@@ -34,7 +34,7 @@ class Article(Base, TimestampMixin):
         String(255), nullable=False, index=True, doc="記事タイトル"
     )
     content: Mapped[str] = mapped_column(
-        Text, nullable=False, doc="記事本文（Markdown形式）"
+        Text, nullable=False, doc="記事本文(Markdown形式)"
     )
     summary: Mapped[str | None] = mapped_column(Text, nullable=True, doc="記事の要約")
 
@@ -86,7 +86,10 @@ class Article(Base, TimestampMixin):
 
     def __repr__(self) -> str:
         """デバッグ用の文字列表現."""
-        return f"<Article(id={self.id}, title='{self.title[:30]}...', status='{self.status}')>"
+        return (
+            f"<Article(id={self.id}, title='{self.title[:30]}...', "
+            f"status='{self.status}')>"
+        )
 
     @property
     def is_published(self) -> bool:

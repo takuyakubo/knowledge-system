@@ -1,6 +1,5 @@
 """File model for managing uploaded files and attachments."""
 
-import os
 from typing import TYPE_CHECKING
 
 from sqlalchemy import Boolean, ForeignKey, Integer, String
@@ -33,7 +32,7 @@ class File(Base, TimestampMixin):
 
     # ファイル属性
     file_size: Mapped[int] = mapped_column(
-        Integer, nullable=False, doc="ファイルサイズ（バイト）"
+        Integer, nullable=False, doc="ファイルサイズ(バイト)"
     )
     mime_type: Mapped[str] = mapped_column(
         String(100), nullable=False, doc="MIMEタイプ"
@@ -77,10 +76,10 @@ class File(Base, TimestampMixin):
 
     # 画像固有の属性（画像ファイルの場合）
     width: Mapped[int | None] = mapped_column(
-        Integer, nullable=True, doc="画像の幅（ピクセル）"
+        Integer, nullable=True, doc="画像の幅(ピクセル)"
     )
     height: Mapped[int | None] = mapped_column(
-        Integer, nullable=True, doc="画像の高さ（ピクセル）"
+        Integer, nullable=True, doc="画像の高さ(ピクセル)"
     )
 
     # 統計
@@ -194,4 +193,6 @@ class File(Base, TimestampMixin):
     @classmethod
     def get_extension_from_filename(cls, filename: str) -> str:
         """ファイル名から拡張子を取得."""
-        return os.path.splitext(filename)[1].lower().lstrip(".")
+        from pathlib import Path
+
+        return Path(filename).suffix.lower().lstrip(".")

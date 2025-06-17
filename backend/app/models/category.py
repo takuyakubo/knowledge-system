@@ -35,15 +35,15 @@ class Category(Base, TimestampMixin):
         ForeignKey("categories.id"), nullable=True, index=True, doc="親カテゴリID"
     )
     level: Mapped[int] = mapped_column(
-        Integer, default=0, nullable=False, doc="階層レベル（0が最上位）"
+        Integer, default=0, nullable=False, doc="階層レベル(0が最上位)"
     )
     path: Mapped[str] = mapped_column(
-        String(500), nullable=False, index=True, doc="階層パス（例: /tech/ai/ml）"
+        String(500), nullable=False, index=True, doc="階層パス(例: /tech/ai/ml)"
     )
 
     # 表示設定
     color: Mapped[str | None] = mapped_column(
-        String(7), nullable=True, doc="カテゴリの色（HEXカラーコード）"
+        String(7), nullable=True, doc="カテゴリの色(HEXカラーコード)"
     )
     icon: Mapped[str | None] = mapped_column(
         String(50), nullable=True, doc="アイコン名"
@@ -206,7 +206,7 @@ class Category(Base, TimestampMixin):
         return (
             session.query(cls)
             .filter(cls.parent_id.is_(None))
-            .filter(cls.is_active == True)
+            .filter(cls.is_active)
             .order_by(cls.sort_order, cls.name)
             .all()
         )

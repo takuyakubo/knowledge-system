@@ -44,12 +44,12 @@ class Paper(Base, TimestampMixin):
         String(500), nullable=False, index=True, doc="論文タイトル"
     )
     abstract: Mapped[str | None] = mapped_column(
-        Text, nullable=True, doc="論文の要約（Abstract）"
+        Text, nullable=True, doc="論文の要約(Abstract)"
     )
 
     # 著者・出版情報
     authors: Mapped[str] = mapped_column(
-        Text, nullable=False, doc="著者名（カンマ区切り）"
+        Text, nullable=False, doc="著者名(カンマ区切り)"
     )
     journal: Mapped[str | None] = mapped_column(
         String(255), nullable=True, doc="ジャーナル名"
@@ -107,9 +107,7 @@ class Paper(Base, TimestampMixin):
     personal_notes: Mapped[str | None] = mapped_column(
         Text, nullable=True, doc="個人的なメモ"
     )
-    rating: Mapped[int | None] = mapped_column(
-        Integer, nullable=True, doc="評価（1-5）"
-    )
+    rating: Mapped[int | None] = mapped_column(Integer, nullable=True, doc="評価(1-5)")
     reading_status: Mapped[str] = mapped_column(
         String(20),
         default="to_read",
@@ -120,7 +118,7 @@ class Paper(Base, TimestampMixin):
 
     # 重要度・優先度
     priority: Mapped[int] = mapped_column(
-        Integer, default=3, nullable=False, doc="優先度（1-5、5が最高）"
+        Integer, default=3, nullable=False, doc="優先度(1-5、5が最高)"
     )
     is_favorite: Mapped[bool] = mapped_column(
         Boolean,
@@ -156,7 +154,10 @@ class Paper(Base, TimestampMixin):
 
     def __repr__(self) -> str:
         """デバッグ用の文字列表現."""
-        return f"<Paper(id={self.id}, title='{self.title[:50]}...', year={self.publication_year})>"
+        return (
+            f"<Paper(id={self.id}, title='{self.title[:50]}...', "
+            f"year={self.publication_year})>"
+        )
 
     @property
     def author_list(self) -> list[str]:
