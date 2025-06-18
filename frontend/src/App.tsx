@@ -12,6 +12,7 @@ import { ArticleEditPage } from './pages/ArticleEditPage';
 import { PapersPage } from './pages/PapersPage';
 import { PaperDetailPage } from './pages/PaperDetailPage';
 import { PaperEditPage } from './pages/PaperEditPage';
+import { PaperCreatePage } from './pages/PaperCreatePage';
 import { ProfilePage } from './pages/ProfilePage';
 
 function App() {
@@ -40,7 +41,7 @@ function App() {
               <Route path="articles/:id/edit" element={<ArticleEditPage />} />
               <Route path="papers" element={<PapersPage />} />
               <Route path="papers/:id" element={<PaperDetailPage />} />
-              <Route path="papers/new" element={<PaperEditPage />} />
+              <Route path="papers/new" element={<PaperCreatePage />} />
               <Route path="papers/:id/edit" element={<PaperEditPage />} />
               <Route path="profile" element={<ProfilePage />} />
             </Route>

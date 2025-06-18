@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import {
   Container,
   Typography,
@@ -13,7 +13,6 @@ import {
   Checkbox,
   Grid,
   Alert,
-  CircularProgress,
   Rating,
 } from '@mui/material';
 import {
@@ -78,60 +77,11 @@ const initialFormData: PaperFormData = {
   citation_count: 0,
 };
 
-export const PaperEditPage: React.FC = () => {
-  const { id } = useParams<{ id: string }>();
+export const PaperCreatePage: React.FC = () => {
   const navigate = useNavigate();
   const [formData, setFormData] = useState<PaperFormData>(initialFormData);
-  const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
-
-  useEffect(() => {
-    if (id) {
-      fetchPaper(parseInt(id));
-    }
-  }, [id]);
-
-  const fetchPaper = async (paperId: number) => {
-    setLoading(true);
-    setError(null);
-    try {
-      const response = await paperAPI.getById(paperId);
-      const paper = response.data;
-      setFormData({
-        title: paper.title || '',
-        abstract: paper.abstract || '',
-        authors: paper.authors || '',
-        journal: paper.journal || '',
-        conference: paper.conference || '',
-        publisher: paper.publisher || '',
-        publication_year: paper.publication_year || null,
-        publication_date: paper.publication_date || '',
-        volume: paper.volume || '',
-        issue: paper.issue || '',
-        pages: paper.pages || '',
-        doi: paper.doi || '',
-        arxiv_id: paper.arxiv_id || '',
-        pmid: paper.pmid || '',
-        isbn: paper.isbn || '',
-        url: paper.url || '',
-        pdf_url: paper.pdf_url || '',
-        language: paper.language || 'en',
-        paper_type: paper.paper_type || 'journal',
-        personal_notes: paper.personal_notes || '',
-        rating: paper.rating || null,
-        reading_status: paper.reading_status || 'to_read',
-        priority: paper.priority || 3,
-        is_favorite: paper.is_favorite || false,
-        citation_count: paper.citation_count || 0,
-      });
-    } catch (error) {
-      console.error('Failed to fetch paper:', error);
-      setError('論文の取得に失敗しました');
-    } finally {
-      setLoading(false);
-    }
-  };
 
   const handleInputChange = (field: keyof PaperFormData) => (
     event: React.ChangeEvent<HTMLInputElement>
@@ -165,21 +115,19 @@ export const PaperEditPage: React.FC = () => {
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
-    if (!id) return;
-
     setSaving(true);
     setError(null);
 
     try {
-      // 空文字列をnullに変換
+      // 空文字列をundefinedに変換してnullとして送信されるのを防ぐ
       const submitData = {
-        ...formData,
-        publication_year: formData.publication_year || undefined,
-        rating: formData.rating || undefined,
+        title: formData.title,
+        authors: formData.authors,
         abstract: formData.abstract || undefined,
         journal: formData.journal || undefined,
         conference: formData.conference || undefined,
         publisher: formData.publisher || undefined,
+        publication_year: formData.publication_year || undefined,
         publication_date: formData.publication_date || undefined,
         volume: formData.volume || undefined,
         issue: formData.issue || undefined,
@@ -190,28 +138,27 @@ export const PaperEditPage: React.FC = () => {
         isbn: formData.isbn || undefined,
         url: formData.url || undefined,
         pdf_url: formData.pdf_url || undefined,
+        language: formData.language,
+        paper_type: formData.paper_type,
         personal_notes: formData.personal_notes || undefined,
+        rating: formData.rating || undefined,
+        reading_status: formData.reading_status,
+        priority: formData.priority,
+        is_favorite: formData.is_favorite,
+        citation_count: formData.citation_count,
+        category_id: null,
+        tag_ids: [],
       };
 
-      await paperAPI.update(parseInt(id), submitData);
-      navigate(`/papers/${id}`);
+      const response = await paperAPI.create(submitData);
+      navigate(`/papers/${response.data.id}`);
     } catch (error) {
-      console.error('Failed to update paper:', error);
-      setError('論文の更新に失敗しました');
+      console.error('Failed to create paper:', error);
+      setError('論文の作成に失敗しました');
     } finally {
       setSaving(false);
     }
   };
-
-  if (loading) {
-    return (
-      <Container>
-        <Box display="flex" justifyContent="center" alignItems="center" minHeight="50vh">
-          <CircularProgress />
-        </Box>
-      </Container>
-    );
-  }
 
   return (
     <Container>
@@ -220,13 +167,13 @@ export const PaperEditPage: React.FC = () => {
         <Box sx={{ mb: 3, display: 'flex', alignItems: 'center', gap: 2 }}>
           <Button
             startIcon={<ArrowBackIcon />}
-            onClick={() => navigate(`/papers/${id}`)}
+            onClick={() => navigate('/papers')}
             variant="outlined"
           >
             戻る
           </Button>
           <Typography variant="h4" component="h1">
-            論文編集
+            新しい論文を追加
           </Typography>
         </Box>
 
@@ -255,6 +202,7 @@ export const PaperEditPage: React.FC = () => {
                         onChange={handleInputChange('title')}
                         multiline
                         rows={2}
+                        placeholder="論文のタイトルを入力してください"
                       />
                     </Grid>
 
@@ -266,6 +214,7 @@ export const PaperEditPage: React.FC = () => {
                         value={formData.authors}
                         onChange={handleInputChange('authors')}
                         helperText="複数の著者はカンマで区切ってください"
+                        placeholder="著者名をカンマ区切りで入力してください"
                       />
                     </Grid>
 
@@ -277,6 +226,7 @@ export const PaperEditPage: React.FC = () => {
                         onChange={handleInputChange('abstract')}
                         multiline
                         rows={4}
+                        placeholder="論文の要約を入力してください"
                       />
                     </Grid>
                   </Grid>
@@ -331,6 +281,7 @@ export const PaperEditPage: React.FC = () => {
                         label="ジャーナル名"
                         value={formData.journal}
                         onChange={handleInputChange('journal')}
+                        placeholder="ジャーナル名を入力"
                       />
                     </Grid>
 
@@ -340,6 +291,7 @@ export const PaperEditPage: React.FC = () => {
                         label="学会名"
                         value={formData.conference}
                         onChange={handleInputChange('conference')}
+                        placeholder="学会名を入力"
                       />
                     </Grid>
 
@@ -349,6 +301,7 @@ export const PaperEditPage: React.FC = () => {
                         label="出版社"
                         value={formData.publisher}
                         onChange={handleInputChange('publisher')}
+                        placeholder="出版社名を入力"
                       />
                     </Grid>
 
@@ -359,6 +312,8 @@ export const PaperEditPage: React.FC = () => {
                         type="number"
                         value={formData.publication_year || ''}
                         onChange={handleNumberChange('publication_year')}
+                        placeholder="例: 2023"
+                        inputProps={{ min: 1900, max: new Date().getFullYear() + 5 }}
                       />
                     </Grid>
 
@@ -368,6 +323,7 @@ export const PaperEditPage: React.FC = () => {
                         label="巻"
                         value={formData.volume}
                         onChange={handleInputChange('volume')}
+                        placeholder="例: 15"
                       />
                     </Grid>
 
@@ -377,6 +333,7 @@ export const PaperEditPage: React.FC = () => {
                         label="号"
                         value={formData.issue}
                         onChange={handleInputChange('issue')}
+                        placeholder="例: 3"
                       />
                     </Grid>
 
@@ -428,6 +385,7 @@ export const PaperEditPage: React.FC = () => {
                         label="PubMed ID"
                         value={formData.pmid}
                         onChange={handleInputChange('pmid')}
+                        placeholder="例: 12345678"
                       />
                     </Grid>
 
@@ -437,6 +395,7 @@ export const PaperEditPage: React.FC = () => {
                         label="ISBN"
                         value={formData.isbn}
                         onChange={handleInputChange('isbn')}
+                        placeholder="例: 978-0123456789"
                       />
                     </Grid>
 
@@ -447,6 +406,7 @@ export const PaperEditPage: React.FC = () => {
                         value={formData.url}
                         onChange={handleInputChange('url')}
                         type="url"
+                        placeholder="https://example.com/paper"
                       />
                     </Grid>
 
@@ -457,6 +417,7 @@ export const PaperEditPage: React.FC = () => {
                         value={formData.pdf_url}
                         onChange={handleInputChange('pdf_url')}
                         type="url"
+                        placeholder="https://example.com/paper.pdf"
                       />
                     </Grid>
                   </Grid>
@@ -524,6 +485,7 @@ export const PaperEditPage: React.FC = () => {
                         value={formData.citation_count}
                         onChange={handleNumberChange('citation_count')}
                         inputProps={{ min: 0 }}
+                        placeholder="0"
                       />
                     </Grid>
 
@@ -559,7 +521,7 @@ export const PaperEditPage: React.FC = () => {
               <Box sx={{ display: 'flex', gap: 2, justifyContent: 'flex-end' }}>
                 <Button
                   variant="outlined"
-                  onClick={() => navigate(`/papers/${id}`)}
+                  onClick={() => navigate('/papers')}
                   disabled={saving}
                 >
                   キャンセル
@@ -570,7 +532,7 @@ export const PaperEditPage: React.FC = () => {
                   startIcon={<SaveIcon />}
                   disabled={saving || !formData.title.trim() || !formData.authors.trim()}
                 >
-                  {saving ? '保存中...' : '保存'}
+                  {saving ? '作成中...' : '論文を追加'}
                 </Button>
               </Box>
             </Grid>
