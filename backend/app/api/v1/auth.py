@@ -50,23 +50,21 @@ def register(
 ) -> Any:
     """新規ユーザー登録."""
     # メールアドレスの重複チェック
-    if crud_user.user.get_by_email(db, email=user_in.email):
+    if crud_user.get_by_email(db, email=user_in.email):
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail="このメールアドレスは既に登録されています",
         )
 
     # ユーザー名の重複チェック（指定されている場合）
-    if user_in.username and crud_user.user.get_by_username(
-        db, username=user_in.username
-    ):
+    if user_in.username and crud_user.get_by_username(db, username=user_in.username):
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail="このユーザー名は既に使用されています",
         )
 
     # ユーザー作成
-    user = crud_user.user.create(db, obj_in=user_in)
+    user = crud_user.create(db, obj_in=user_in)
 
     # TODO: メール認証トークンを生成してメール送信
     # verification_token = generate_email_verification_token(user.email)
@@ -82,7 +80,7 @@ def login(
     user_credentials: UserLogin,
 ) -> Any:
     """ユーザーログイン."""
-    user = crud_user.user.authenticate(
+    user = crud_user.authenticate(
         db,
         email_or_username=user_credentials.email_or_username,
         password=user_credentials.password,
@@ -101,7 +99,7 @@ def login(
         )
 
     # ログイン情報を更新
-    crud_user.user.update_last_login(db, user=user)
+    crud_user.update_last_login(db, user=user)
 
     # トークンを生成
     access_token_expires = timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES)
@@ -136,7 +134,7 @@ def refresh_token(
             detail="無効なリフレッシュトークンです",
         )
 
-    user = crud_user.user.get_by_email(db, email=email)
+    user = crud_user.get_by_email(db, email=email)
     if not user or not user.is_active:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
@@ -171,7 +169,7 @@ def change_password(
 ) -> Any:
     """パスワード変更."""
     # 現在のパスワードを確認
-    user = crud_user.user.authenticate(
+    user = crud_user.authenticate(
         db,
         email_or_username=current_user.email,
         password=password_data.current_password,
@@ -183,7 +181,7 @@ def change_password(
         )
 
     # 新しいパスワードを設定
-    crud_user.user.update(
+    crud_user.update(
         db, db_obj=current_user, obj_in={"password": password_data.new_password}
     )
 
@@ -197,7 +195,7 @@ def forgot_password(
     reset_request: PasswordResetRequest,
 ) -> Any:
     """パスワードリセット要求."""
-    user = crud_user.user.get_by_email(db, email=reset_request.email)
+    user = crud_user.get_by_email(db, email=reset_request.email)
     if not user:
         # セキュリティのため、ユーザーが存在しない場合も成功レスポンスを返す
         return PasswordResetConfirmation(
@@ -234,7 +232,7 @@ def reset_password(
             detail="無効または期限切れのトークンです",
         )
 
-    user = crud_user.user.get_by_email(db, email=email)
+    user = crud_user.get_by_email(db, email=email)
     if not user or not user.is_active:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
@@ -242,7 +240,7 @@ def reset_password(
         )
 
     # パスワードを更新
-    crud_user.user.update(db, db_obj=user, obj_in={"password": reset_data.new_password})
+    crud_user.update(db, db_obj=user, obj_in={"password": reset_data.new_password})
 
     return {"message": "パスワードが正常にリセットされました"}
 
@@ -254,7 +252,7 @@ def request_email_verification(
     verification_request: EmailVerificationRequest,
 ) -> Any:
     """メール認証要求."""
-    user = crud_user.user.get_by_email(db, email=verification_request.email)
+    user = crud_user.get_by_email(db, email=verification_request.email)
     if not user:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
@@ -287,7 +285,7 @@ def verify_email(
             detail="無効または期限切れのトークンです",
         )
 
-    user = crud_user.user.get_by_email(db, email=email)
+    user = crud_user.get_by_email(db, email=email)
     if not user:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
@@ -298,7 +296,7 @@ def verify_email(
         return {"message": "このメールアドレスは既に認証済みです"}
 
     # メールアドレスを認証済みにする
-    crud_user.user.verify_email(db, user=user)
+    crud_user.verify_email(db, user=user)
 
     return {"message": "メールアドレスが正常に認証されました"}
 
@@ -314,7 +312,7 @@ def generate_user_api_key(
     api_key = generate_api_key()
 
     # ユーザーにAPIキーを設定
-    crud_user.user.update_api_key(db, user=current_user, api_key=api_key)
+    crud_user.update_api_key(db, user=current_user, api_key=api_key)
 
     return ApiKeyResponse(
         api_key=api_key,
@@ -329,7 +327,7 @@ def revoke_api_key(
     current_user: Annotated[User, Depends(get_current_active_user)],
 ) -> Any:
     """APIキーを削除."""
-    crud_user.user.remove_api_key(db, user=current_user)
+    crud_user.remove_api_key(db, user=current_user)
     return {"message": "APIキーが正常に削除されました"}
 
 

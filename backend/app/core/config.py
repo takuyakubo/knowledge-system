@@ -14,7 +14,12 @@ class Settings(BaseModel):
     PROJECT_NAME: str = "Knowledge Management System"
 
     # CORS設定
-    ALLOWED_HOSTS: list[str] = ["http://localhost:3000", "http://127.0.0.1:3000"]
+    ALLOWED_HOSTS: list[str] = [
+        "http://localhost:3000",
+        "http://localhost:3002",
+        "http://127.0.0.1:3000",
+        "http://127.0.0.1:3002",
+    ]
 
     # データベース設定（開発環境ではSQLiteを使用）
     DATABASE_URL: str = "sqlite:///./knowledge_system.db"
