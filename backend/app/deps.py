@@ -43,7 +43,7 @@ def get_current_user(
         )
 
     # ユーザーを取得
-    user = crud_user.user.get_by_email(db, email=email)
+    user = crud_user.get_by_email(db, email=email)
     if user is None:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
@@ -108,7 +108,7 @@ def get_current_user_optional(
     if email is None:
         return None
 
-    user = crud_user.user.get_by_email(db, email=email)
+    user = crud_user.get_by_email(db, email=email)
     if user is None or not user.is_active:
         return None
 

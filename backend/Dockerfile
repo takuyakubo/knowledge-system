@@ -18,14 +18,17 @@ RUN apt-get update \
 # Install uv
 COPY --from=ghcr.io/astral-sh/uv:latest /uv /bin/uv
 
-# Copy dependency files
-COPY pyproject.toml uv.lock ./
+# Copy dependency files and README
+COPY pyproject.toml uv.lock README.md ./
+
+# Copy source code needed for the build
+COPY src/ src/
 
 # Install dependencies
 RUN uv sync --frozen --no-dev
 
-# Copy project
-COPY . .
+# Copy backend project
+COPY backend/ .
 
 # Create uploads directory
 RUN mkdir -p uploads
@@ -34,4 +37,4 @@ RUN mkdir -p uploads
 EXPOSE 8000
 
 # Run the application
-CMD ["uv", "run", "uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]
+CMD ["uv", "run", "python", "-m", "uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]

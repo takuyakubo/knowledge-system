@@ -42,7 +42,20 @@ export const RegisterPage: React.FC = () => {
       await register(email, password, displayName);
       navigate('/');
     } catch (err: any) {
-      setError(err.response?.data?.detail || '登録に失敗しました');
+      let errorMessage = '登録に失敗しました';
+
+      if (err.response?.data?.detail) {
+        // バリデーションエラーの場合（配列形式）
+        if (Array.isArray(err.response.data.detail)) {
+          errorMessage = err.response.data.detail
+            .map((error: any) => error.msg)
+            .join(', ');
+        } else {
+          errorMessage = err.response.data.detail;
+        }
+      }
+
+      setError(errorMessage);
     } finally {
       setLoading(false);
     }
@@ -101,7 +114,7 @@ export const RegisterPage: React.FC = () => {
               autoComplete="new-password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              helperText="8文字以上で設定してください"
+              helperText="8文字以上、大文字・小文字・数字・特殊文字を含む"
             />
             <TextField
               margin="normal"

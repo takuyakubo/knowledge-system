@@ -12,7 +12,7 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data
     ports:
-      - "5432:5432"
+      - "5433:5432"
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U postgres"]
       interval: 30s
@@ -22,8 +22,8 @@ services:
   # FastAPI Backend
   backend:
     build:
-      context: ./backend
-      dockerfile: Dockerfile
+      context: .
+      dockerfile: ./backend/Dockerfile
     container_name: knowledge_system_backend
     environment:
       DATABASE_URL: postgresql://postgres:password@db:5432/knowledge_system
@@ -39,7 +39,7 @@ services:
     depends_on:
       db:
         condition: service_healthy
-    command: ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000", "--reload"]
+    command: ["uv", "run", "python", "-m", "uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000", "--reload"]
 
   # React Frontend
   frontend:
@@ -48,7 +48,7 @@ services:
       dockerfile: Dockerfile
     container_name: knowledge_system_frontend
     ports:
-      - "3000:80"
+      - "3001:80"
     depends_on:
       - backend
     environment:

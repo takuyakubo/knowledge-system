@@ -64,11 +64,11 @@ api.interceptors.response.use(
 
 // API エンドポイント
 export const authAPI = {
-  register: (data: { email: string; password: string; display_name?: string }) =>
+  register: (data: { email: string; password: string; full_name?: string }) =>
     api.post('/auth/register', data),
 
   login: (data: { email: string; password: string }) =>
-    api.post('/auth/login', data),
+    api.post('/auth/login', { email_or_username: data.email, password: data.password }),
 
   logout: () => api.post('/auth/logout'),
 

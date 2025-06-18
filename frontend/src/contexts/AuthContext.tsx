@@ -60,24 +60,26 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
   const login = async (email: string, password: string) => {
     const response = await authAPI.login({ email, password });
-    const { access_token, refresh_token, user } = response.data;
+    const { access_token, refresh_token } = response.data;
 
     localStorage.setItem('access_token', access_token);
     localStorage.setItem('refresh_token', refresh_token);
-    setUser(user);
+
+    // ユーザー情報を取得
+    const userResponse = await authAPI.me();
+    setUser(userResponse.data);
   };
 
   const register = async (email: string, password: string, displayName?: string) => {
     const response = await authAPI.register({
       email,
       password,
-      display_name: displayName,
+      full_name: displayName,
     });
-    const { access_token, refresh_token, user } = response.data;
+    const user = response.data;
 
-    localStorage.setItem('access_token', access_token);
-    localStorage.setItem('refresh_token', refresh_token);
-    setUser(user);
+    // 登録後にログインして認証トークンを取得
+    await login(email, password);
   };
 
   const logout = async () => {

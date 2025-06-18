@@ -29,7 +29,19 @@ export const LoginPage: React.FC = () => {
       await login(email, password);
       navigate('/');
     } catch (err: any) {
-      setError(err.response?.data?.detail || 'ログインに失敗しました');
+      let errorMessage = 'ログインに失敗しました';
+
+      if (err.response?.data?.detail) {
+        if (Array.isArray(err.response.data.detail)) {
+          errorMessage = err.response.data.detail
+            .map((error: any) => error.msg)
+            .join(', ');
+        } else {
+          errorMessage = err.response.data.detail;
+        }
+      }
+
+      setError(errorMessage);
     } finally {
       setLoading(false);
     }

@@ -25,8 +25,16 @@ interface Article {
   id: number;
   title: string;
   summary?: string;
-  tags: Array<{ id: number; name: string }>;
-  category?: { id: number; name: string };
+  content: string;
+  slug: string;
+  status: string;
+  meta_description?: string;
+  featured_image_url?: string;
+  is_public: boolean;
+  category_id?: number;
+  published_at?: string;
+  view_count: number;
+  like_count: number;
   created_at: string;
   updated_at: string;
 }
@@ -45,9 +53,10 @@ export const ArticlesPage: React.FC = () => {
     setLoading(true);
     try {
       const response = await articleAPI.list({ search });
-      setArticles(response.data);
+      setArticles(response.data || []);
     } catch (error) {
       console.error('Failed to fetch articles:', error);
+      setArticles([]); // エラー時は空配列に設定
     } finally {
       setLoading(false);
     }
@@ -94,6 +103,12 @@ export const ArticlesPage: React.FC = () => {
         <Box display="flex" justifyContent="center" p={4}>
           <CircularProgress />
         </Box>
+      ) : articles.length === 0 ? (
+        <Box display="flex" justifyContent="center" p={4}>
+          <Typography variant="h6" color="text.secondary">
+            {search ? '検索結果がありません' : '記事がまだありません'}
+          </Typography>
+        </Box>
       ) : (
         <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
           {articles.map((article) => (
@@ -102,22 +117,28 @@ export const ArticlesPage: React.FC = () => {
                   <Typography variant="h6" component="h2" gutterBottom>
                     {article.title}
                   </Typography>
-                  {article.category && (
+                  <Box sx={{ mb: 1 }}>
                     <Chip
-                      label={article.category.name}
+                      label={article.status}
                       size="small"
-                      color="primary"
-                      sx={{ mr: 1, mb: 1 }}
+                      color={article.status === 'published' ? 'success' : 'default'}
+                      sx={{ mr: 1 }}
                     />
-                  )}
-                  {article.tags.map((tag) => (
+                    {article.is_public && (
+                      <Chip
+                        label="公開"
+                        size="small"
+                        color="primary"
+                        sx={{ mr: 1 }}
+                      />
+                    )}
                     <Chip
-                      key={tag.id}
-                      label={tag.name}
+                      label={`${article.view_count} views`}
                       size="small"
-                      sx={{ mr: 1, mb: 1 }}
+                      variant="outlined"
+                      sx={{ mr: 1 }}
                     />
-                  ))}
+                  </Box>
                   {article.summary && (
                     <Typography
                       variant="body2"
